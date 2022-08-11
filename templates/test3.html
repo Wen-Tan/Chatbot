@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>蓝胖子快乐屋</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<style>
+    .talk_con{
+        width: 800px;
+        height: 500px;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+        border: 1px solid #666666;
+    }
+    .talk_show{
+        width: 780px;
+        height: 420px;
+        margin: 10px auto;
+        background-color: #ffffff;
+        border: 1px solid #666666;
+        overflow-y: scroll;
+    }
+    .talk_input{
+        width: 780px;
+        margin: 10px auto;
+    }
+    .talk_word{
+        width: 680px;
+        height: 26px;
+        float: left;
+        padding: 0;
+        margin-left: 0px;
+    }
+    .talk_sub{
+        width: 85px;
+        height: 30px;
+        margin-left: 10px;
+        float: left;
+    }
+    .atalk{
+        margin-top:30px;
+        margin-bottom:25px;
+        text-align: left;
+    }
+    .btalk{
+        margin-top:30px;
+        margin-bottom:25px;
+        text-align: right;
+    }
+    .atalk_span{
+        display: inline-block;
+        background-color: #1282c9;
+        border-radius:10px ;
+        padding: 5px 10px;
+        color: #ffffff
+    }
+    .btalk_span{
+        display: inline-block;
+        background-color: #ed8121;
+        border-radius:10px ;
+        padding: 5px 10px;
+        color: #ffffff
+    }
+    .pic_l{
+        display: inline-block;
+        margin-left:10px;
+        margin-right:5px;
+        margin-bottom:10px;
+        width:40px;
+        height:40px;
+        float: left;
+    }
+    .pic_r{
+        display: inline-block;
+        margin-right:10px;
+        margin-left:5px;
+        margin-bottom:10px;
+        width:40px;
+        height:40px;
+        float: right;
+    }
+    .pic_f{
+        display: inline-block;
+        margin-top:25px;
+        margin-left:10px;
+        margin-right:5px;
+        margin-bottom:10px;
+        width:40px;
+        height:40px;
+        float: left;
+    }
+</style>
+<script >
+    $(function(){
+        var $text = $('#talkwords'),
+        $sendBtn=$('#talksub'),
+        $mesBox = $('#words');
+
+    $sendBtn.click(function(){
+        var StextCon=$text.val()
+       function GetAnswer(StextCon){
+		var str = '网络错误，请重试！'
+		$.ajax({
+			url: "answer",
+			type: "POST",
+			data: StextCon,
+			dataType: "json",
+			async: false,
+			success: function (data) {
+				console.log(data)
+				str = data
+			}
+		})
+		return str
+	}
+	str=GetAnswer(StextCon);
+        // //1.没有消息
+        if(StextCon==''){
+            alert('请输入内容')
+        }
+        //2.有消息
+        var AsMesContent = ' ',BsMesContent=' ';
+
+        AsMesContent='<img src="static/img/1.jpg" class="pic_l">'+'<div class="atalk"><span class="atalk_span">'+str['answers']+'</span></div>'
+        asMesContent='<img src="static/img/1.jpg" class="pic_l">'+'<div class="atalk"><span class="atalk_span">'+'您可以对我说：'+str['Restr']+'</span></div>'
+        BsMesContent='<img src="static/img/2.jpg" class="pic_r">'+'<div class="btalk"><span class="btalk_span">'+StextCon+'</span></div>'
+        $mesBox.html($mesBox.html()+BsMesContent+AsMesContent+asMesContent)
+        $text.val('');
+    })
+
+})
+
+
+</script>
+</head>
+<body>
+   <div class="talk_con">
+       <div class="talk_show" id="words">
+            <img src="static/img/1.jpg" class='pic_f'>
+            <div class="atalk"><span class="atalk_span">您好，我是疫情信息问答机器人小易。</span></div>
+       </div>
+
+    <form action=" " method="post">
+       <div class="talk_input">
+           <input type="text" class="talk_word" id="talkwords" name="talkword">
+           <input type="button" value="发送" class="talk_sub" id="talksub">
+       </div>
+        </form>
+   </div>
+</body>
+</html>
